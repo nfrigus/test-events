@@ -1,0 +1,28 @@
+{
+  "name": "app",
+  "version": "0.0.0",
+  "description": "JS app bootstrap with gulp, browserify, babel, mocha, chai.",
+  "repository": "null",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha --recursive --compilers js:babel-core/register",
+    "build": "gulp build"
+  },
+  "author": "shestakovsemen@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.16.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "~2.0.0",
+    "gulp-uglify": "^2.0.0",
+    "mocha": "^3.1.2",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "babel": {
+    "presets": ["es2015"]
+  }
+}
