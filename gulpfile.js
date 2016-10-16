@@ -2,6 +2,7 @@ const
   babel = require('babelify'),
   browserify = require('browserify'),
   buffer = require('vinyl-buffer'),
+  connect = require('gulp-connect'),
   gulp = require('gulp'),
   source = require('vinyl-source-stream'),
   sourcemaps = require('gulp-sourcemaps'),
@@ -36,6 +37,17 @@ function compileJs() {
     .pipe(gulp.dest(conf.distDir));
 }
 
+function serve() {
+  compileJs();
+
+  connect.server({
+    livereload: true,
+    port: 3000,
+    root: 'dist',
+  });
+};
+
+gulp.task('serve', () => serve());
 gulp.task('build', () => compileJs());
 gulp.task('watch', () => gulp.watch(conf.watchPaths, ['build']));
 
