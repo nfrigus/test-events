@@ -1,8 +1,8 @@
 {
   "name": "app",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "JS app bootstrap with gulp, browserify, babel, mocha, chai.",
-  "repository": "null",
+  "repository": "https://github.com/nfrigus/test-events",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha --recursive --compilers js:babel-core/register",
