@@ -6,7 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "mocha --recursive --compilers js:babel-core/register",
-    "build": "gulp build"
+    "build": "gulp build",
+    "build": "gulp serve"
   },
   "author": "shestakovsemen@gmail.com",
   "license": "ISC",
