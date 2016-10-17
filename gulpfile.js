@@ -20,7 +20,7 @@ function compileJs() {
       debug: true
     })
     .transform(babel, {
-      presets: ["es2015"],
+      presets: ["es2015", "react"],
       sourceMaps: true
     })
     .bundle().on('error', function(err) {
