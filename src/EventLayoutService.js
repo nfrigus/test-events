@@ -1,114 +1,100 @@
-module.exports = class {
+module.exports = {
+  arrangeIntersectingEventsToCols,
+  getEventsLayout,
+  sortEvents,
+  getIntersections,
+  areEventsIntersecting,
+}
 
-  constructor() {
-    this._eventsList = [];
-  }
+/**
+ * Arrange group of intersacting events to cols
+ *
+ * @return Array of cols with events
+ */
+function arrangeIntersectingEventsToCols(events) {
+  sortEvents(events);
 
-  /**
-   * Add events to service
-   */
-  addEvents(events) {
-    if (!Array.isArray(events)) {
-      events = [events];
-    }
+  let cols = [
+    []
+  ];
 
-    this._eventsList = this._eventsList.concat(events);
+  events.map(event => {
+    let
+      isAddedToExistingCol = false;
 
-    return this;
-  }
-
-  /**
-   * Arrange group of intersacting events to cols
-   *
-   * @return Array of cols with events
-   */
-  arrangeIntersectingEventsToCols(events) {
-    this.sortEvents(events);
-
-    let cols = [
-      []
-    ];
-
-    events.map(event => {
-      let
-        isAddedToExistingCol = false;
-
-      cols.map(col => {
-        if (isAddedToExistingCol) {
-          return;
-        }
-
-        let
-          colLastEvent = col.slice(-1)[0];
-
-        if (!colLastEvent || !areEventsIntersecting(event, colLastEvent)) {
-          col.push(event);
-          isAddedToExistingCol = true;
-        }
-      });
-
-      if (!isAddedToExistingCol) {
-        cols.push([event]);
+    cols.map(col => {
+      if (isAddedToExistingCol) {
+        return;
       }
 
+      let
+        colLastEvent = col.slice(-1)[0];
+
+      if (!colLastEvent || !areEventsIntersecting(event, colLastEvent)) {
+        col.push(event);
+        isAddedToExistingCol = true;
+      }
     });
 
-    return cols;
-  }
+    if (!isAddedToExistingCol) {
+      cols.push([event]);
+    }
 
-  /**
-   * Get events ordered in intersection groups and columns
-   */
-  getEventsLayout() {
-    return this.getIntersections().map(intersectionGroup => this.arrangeIntersectingEventsToCols(intersectionGroup));
-  }
+  });
 
-  /**
-   * Order added events by start and duration
-   */
-  sortEvents(list) {
-    list = list || this._eventsList;
+  return cols;
+}
 
-    list.sort((a, b) => a.start - b.start || a.duration - b.duration);
+/**
+ * Get events ordered in intersection groups and columns
+ */
+function getEventsLayout(events) {
+  return getIntersections(events).map(intersectionGroup => arrangeIntersectingEventsToCols(intersectionGroup));
+}
 
-    return this;
-  }
+/**
+ * Order added events by start and duration
+ */
+function sortEvents(list) {
+  list.sort((a, b) => a.start - b.start || a.duration - b.duration);
 
-  /**
-   * Groups added events to intersecting groups
-   *
-   * @return Array of intersecting events groups
-   */
-  getIntersections() {
-    this.sortEvents();
+  return this;
+}
 
-    let
-      intersectionList = this._eventsList.reduce((list, event) => {
-        if (!list.length) {
+/**
+ * Groups added events to intersecting groups
+ *
+ * @return Array of intersecting events groups
+ */
+function getIntersections(events) {
+  sortEvents(events);
+
+  let
+    intersectionList = events.reduce((list, event) => {
+      if (!list.length) {
+        list.push([event]);
+      } else {
+        let
+          addedToExistingList = false;
+
+        list.map(intersectinEvents =>
+          intersectinEvents.map(eventFromList => {
+            if (areEventsIntersecting(event, eventFromList)) {
+              intersectinEvents.push(event);
+              addedToExistingList = true;
+            }
+          })
+        );
+
+        if (!addedToExistingList) {
           list.push([event]);
-        } else {
-          let
-            addedToExistingList = false;
-
-          list.map(intersectinEvents =>
-            intersectinEvents.map(eventFromList => {
-              if (areEventsIntersecting(event, eventFromList)) {
-                intersectinEvents.push(event);
-                addedToExistingList = true;
-              }
-            })
-          );
-
-          if (!addedToExistingList) {
-            list.push([event]);
-          }
         }
+      }
 
-        return list;
-      }, []);
+      return list;
+    }, []);
 
-    return intersectionList;
-  }
+  return intersectionList;
 }
 
 /**
